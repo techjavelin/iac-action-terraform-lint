@@ -1,5 +1,6 @@
 # iac-action-terraform-lint
-[![Continuous Integration | main](https://github.com/techjavelin/iac-action-terraform-lint/actions/workflows/continuous.yml/badge.svg?branch=main)](https://github.com/techjavelin/iac-action-terraform-lint/actions/workflows/continuous.yml)
+
+[![Continuous Integration | main](https://github.com/techjavelin/iac-action-terraform-lint/actions/workflows/continuous.yml/badge.svg)](https://github.com/techjavelin/iac-action-terraform-lint/actions/workflows/continuous.yml)
 
 The `techjavelin/iac-action-terraform-lint` action is a part of the [iac-actions collection](https://github.com/search?q=org%3Atechjavelin+iac-action) created by [Tech Javelin](https://github.com/techjavelin) to make creating consistent secure infrastructure configuration management as easy as each element in your Infrastructure-as-Code projects by creating the concept of Infrastructure-as-Code-as-Code - allowing you to describe your IaC Workflows as immutable code, provide testing strategies to ensure changes to infrastructure won't break production, and create simple, repeatable processes for managing your infrastructure.
 
