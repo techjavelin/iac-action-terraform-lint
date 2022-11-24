@@ -29,19 +29,19 @@ jobs:
 
       - name: test-terraform-versions // collect-results
         id: collect-results
-        run: tflint --version | head -n1 | cut -d" " -f3
+        run: echo version=$(tflint --version | head -n1 | cut -d" " -f3) >> $GITHUB_OUTPUT
 
       - name: test-terraform-versions // verify-version
         if: ${{ matrix.version != 'latest' }}
         uses: pr-mpt/actions-assert@v4
         with:
           assertion: npm://@assertions/is-equal
-          actual   : ${{ steps.collect-results.outputs.stdout }}
+          actual   : ${{ steps.collect-results.outputs.version }}
           expected : ${{ matrix.terraform-version }}
 
       - name: test-terraform-versions // collect-facts
         id: collect-facts
-        run: gh release list -R terraform-linters/tflint --exclude-drafts --limit 10 | grep Latest | cut -f1 | cut -dv -f2
+        run: echo version=$(gh release list -R terraform-linters/tflint --exclude-drafts --limit 10 | grep Latest | cut -f1 | cut -dv -f2) >> $GITHUB_OUTPUT
         if: ${{ matrix.version == 'latest' }}
 
       - name: test-terraform-versions // verify-latest
@@ -49,5 +49,5 @@ jobs:
         uses: pr-mpt/actions-assert@v4
         with:
           assertion: npm://@assertions/is-equal
-          actual   : ${{ steps.collect-results.outputs.stdout }}
-          expected : ${{ steps.collect-facts.outputs.stdout }}
+          actual   : ${{ steps.collect-results.outputs.version }}
+          expected : ${{ steps.collect-facts.outputs.version }}
