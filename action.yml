@@ -1,6 +1,10 @@
 name: 'techjavelin/iac-github-actions // terraform // lint'
 description: 'Lints your terraform files using tflint'
 
+branding:
+  icon: edit
+  color: green
+
 inputs:
   terraform-dir:
     description: "Absolute path or relative path from project root to where your terraform files are"
