@@ -25,7 +25,7 @@ jobs:
       - name: test-terraform-versions // execute
         uses: ./
         with:
-          tflint-version: ${{ matrix.terraform-version }}
+          tflint-version: ${{ matrix.version }}
 
       - name: test-terraform-versions // collect-results
         id: collect-results
