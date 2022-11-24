@@ -108,3 +108,4 @@ jobs:
         uses: ./
         with:
           config: .github/test-harness/config/config.hcl
+          terraform-dir: .github/test-harness/config
