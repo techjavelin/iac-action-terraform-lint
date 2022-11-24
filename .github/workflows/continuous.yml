@@ -37,7 +37,7 @@ jobs:
         with:
           assertion: npm://@assertions/is-equal
           actual   : ${{ steps.collect-results.outputs.version }}
-          expected : ${{ matrix.terraform-version }}
+          expected : ${{ matrix.version }}
 
       - name: test-terraform-versions // collect-facts
         id: collect-facts
