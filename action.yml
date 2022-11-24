@@ -7,9 +7,17 @@ inputs:
     default: '.'
     required: false
 
-  tflint-version:
+  version:
     description: Use a specific version of tflint
     default: latest
+    required: false
+
+  config:
+    description: Use a specific config file for tflint
+    required: false
+
+  format:
+    description: Force tflint to output in a different format (overrides config)
     required: false
 
 runs:
@@ -18,14 +26,33 @@ runs:
     - name: techjavelin/iac-action-terraform-lint // setup lint
       uses: terraform-linters/setup-tflint@v2
       with:
-        tflint_version: ${{ inputs.tflint-version }}
+        tflint_version: ${{ inputs.version }}
 
     - name: techjavelin/iac-action-terraform-lint // initialize
       run: tflint --init
       working-directory: ${{ inputs.source-dir }}
       shell: bash
 
-    - name: techjavelin/iac-action-terraform-lint // lint
-      run: tflint -f compact .
-      working-directory: ${{ inputs.source-dir }}
+    - id: set-tflint-format
+      run: |
+        if [[ "${{ inputs.format }}" != "" ]]; then
+          echo "arg=-f ${{ inputs.format }}" >> $GITHUB_OUTPUT
+        else
+          echo "arg=" >> $GITHUB_OUTPUT
+        fi
       shell: bash
+
+    - id: set-tflint-config
+      run: |
+        if [[ "${{ inputs.config }}" != "" ]]; then
+          echo "arg=--config ${{ inputs.config }}" >> $GITHUB_OUTPUT
+        else
+          echo "arg=" >> $GITHUB_OUTPUT
+        fi
+      shell: bash
+
+    - name: techjavelin/iac-action-terraform-lint // lint
+      run: tflint ${{ steps.set-tflint-format.outputs.arg }} ${{ steps.set-tflint-config.outputs.arg }} ${{ inputs.terraform-dir }}
+      shell: bash
+
+    

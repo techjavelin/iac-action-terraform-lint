@@ -72,3 +72,39 @@ jobs:
           assertion: npm://@assertions/is-equal
           actual   : ${{ steps.collect-results.outputs.version }}
           expected : ${{ steps.collect-facts.outputs.version }}
+
+  test-tflint-fail:
+    name: iac-ac-action-terraform-lint // continuous // test-tflint-versions
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: test-tflint-versions // checkout
+        uses: actions/checkout@v3
+
+      - name: test-tflint-versions // execute
+        id: execute
+        uses: ./
+        with:
+          terraform-dir: .github/test-harness/fail
+        continue-on-error: true
+
+      - name: test-tflint-versions // verify
+        uses: pr-mpt/actions-assert@v4
+        with:
+          assertion: npm://@assertions/is-equal
+          actual   : ${{ steps.execute.outcome }}
+          expected : failure
+
+  test-tflint-config:
+    name: iac-ac-action-terraform-lint // continuous // test-tflint-config
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: test-tflint-versions // checkout
+        uses: actions/checkout@v3
+
+      - name: test-tflint-versions // execute
+        id: execute
+        uses: ./
+        with:
+          config: .github/test-harness/config/config.hcl
