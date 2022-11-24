@@ -18,13 +18,13 @@ jobs:
 
       - name: composite-action-lint // install-action-validator
         run: |
-          gh release download --pattern "*_linux_amd64" -R mpalmer/action-validator -O ./action-validator
-          chmod +x ./action-validator
+          gh release download --pattern "*_linux_amd64" -R mpalmer/action-validator --skip-existing
+          chmod +x ./action-validator_linux_amd64
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: composite-action-lint // execute
-        run: ./action-validator -v action.yml
+        run: ./action-validator_linux_amd64 -v action.yml
 
   test-tflint-versions:
     name: iac-ac-action-terraform-lint // continuous // test-tflint-versions
