@@ -52,9 +52,9 @@ runs:
             ARGS="$ARGS --var='$var'"
           done
           echo "Arguments: $ARGS"
-          echo "args=$ARGS" >> $GITHUB_OUTPUT
+          echo "arg=$ARGS" >> $GITHUB_OUTPUT
         else
-          echo "args=" >> $GITHUB_OUTPUT
+          echo "arg=" >> $GITHUB_OUTPUT
         fi
       shell: bash
 
