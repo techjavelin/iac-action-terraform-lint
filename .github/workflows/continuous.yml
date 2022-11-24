@@ -8,7 +8,25 @@ on:
     pull_request:
 
 jobs:
-  test-terraform-versions:
+  composite-action-lint:
+    name: iac-action-terraform-lint // continuous // composite-action-lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: composite-action-lint // checkout
+        uses: actions/checkout@v3
+
+      - name: composite-action-lint // install-action-validator
+        run: |
+          gh release download --pattern "*_linux_amd64" -R mpalmer/action-validator -O ./action-validator
+          chmod +x ./action-validator
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: composite-action-lint // execute
+        run: ./action-validator -v action.yml
+
+  test-tflint-versions:
     name: iac-ac-action-terraform-lint // continuous // test-tflint-versions
 
     strategy:
@@ -19,19 +37,19 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - name: test-terraform-versions // checkout
+      - name: test-tflint-versions // checkout
         uses: actions/checkout@v3
 
-      - name: test-terraform-versions // execute
+      - name: test-tflint-versions // execute
         uses: ./
         with:
           tflint-version: ${{ matrix.version }}
 
-      - name: test-terraform-versions // collect-results
+      - name: test-tflint-versions // collect-results
         id: collect-results
         run: echo version=v$(tflint --version | head -n1 | cut -d" " -f3) >> $GITHUB_OUTPUT
 
-      - name: test-terraform-versions // verify-version
+      - name: test-tflint-versions // verify-version
         if: ${{ matrix.version != 'latest' }}
         uses: pr-mpt/actions-assert@v4
         with:
@@ -39,7 +57,7 @@ jobs:
           actual   : ${{ steps.collect-results.outputs.version }}
           expected : ${{ matrix.version }}
 
-      - name: test-terraform-versions // collect-facts
+      - name: test-tflint-versions // collect-facts
         id: collect-facts
         run: echo version=v$(gh release list -R terraform-linters/tflint --exclude-drafts --limit 10 | grep Latest | cut -f1 | cut -dv -f2) >> $GITHUB_OUTPUT
         if: ${{ matrix.version == 'latest' }}
@@ -47,7 +65,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 
-      - name: test-terraform-versions // verify-latest
+      - name: test-tflint-versions // verify-latest
         if: ${{ matrix.version == 'latest' }}
         uses: pr-mpt/actions-assert@v4
         with:

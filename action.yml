@@ -5,10 +5,12 @@ inputs:
   terraform-dir:
     description: "Absolute path or relative path from project root to where your terraform files are"
     default: '.'
+    required: false
 
   tflint-version:
     description: Use a specific version of tflint
     default: latest
+    required: false
 
 runs:
   using: composite
