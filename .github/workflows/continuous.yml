@@ -1,0 +1,50 @@
+---
+name: "techjavelin // iac-ac-action-terraform-lint"
+
+on:
+  push:
+    branches:
+      - main
+    pull_request:
+
+jobs:
+  test-terraform-versions:
+    name: iac-ac-action-terraform-lint // continuous // test-terraform-versions
+    id: test-terraform-versions
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        terraform-version: [0.11.14, latest]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: test-terraform-versions // checkout
+        uses: actions/checkout@v3
+
+      - name: test-terraform-versions // execute
+        uses: ./
+        with:
+          terraform-dir: .github/test-harness/simple
+          terraform-version: ${{ matrix.terraform-version }}
+
+      - name: test-terraform-versions // collect-results
+        id: collect-results
+        run: terraform version -json | jq -r .terraform_version
+
+      - name: test-terraform-versions // verify-version
+        if: ${{ matrix.terraform-version != 'latest' }}
+        uses: pr-mpt/actions-assert@v4
+        with:
+          assertion: npm://@assertions/is-equal:v1
+          actual   : ${{ steps.collect-results.outputs.stdout }}
+          expected : v${{ matrix.terraform-version }}
+
+      - name: test-terraform-versions // verify-latest
+        if: ${{ matrix.terraform-version == 'latest' }}
+        uses: pr-mpt/actions-assert@v4
+        with:
+          assertion: npm://@assertions/starts-with:v1
+          actual   : ${{ steps.collect-results.outputs.stdout }}
+          expected : v
