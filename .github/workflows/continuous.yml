@@ -1,5 +1,5 @@
 ---
-name: "techjavelin // iac-ac-action-terraform-lint"
+name: "Continuous Integration | main"
 
 on:
   push:

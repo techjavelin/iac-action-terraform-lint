@@ -29,6 +29,14 @@ outputs:
     description: The variables that were passed to tflint
     value: ${{ steps.set-tflint-vars.outputs.arg }}
 
+  result:
+    description: The result of running lint
+    value: ${{ steps.execute.outputs.stdout }}
+
+  init: 
+    description: The result of initialization
+    value: ${{ steps.initialize.outputs.stdout }}
+
 runs:
   using: composite
   steps:
@@ -36,11 +44,6 @@ runs:
       uses: terraform-linters/setup-tflint@v2
       with:
         tflint_version: ${{ inputs.version }}
-
-    - name: techjavelin/iac-action-terraform-lint // initialize
-      run: tflint --init
-      working-directory: ${{ inputs.source-dir }}
-      shell: bash
 
     - id: set-tflint-vars
       run: |
@@ -76,7 +79,13 @@ runs:
         fi
       shell: bash
 
+    - name: techjavelin/iac-action-terraform-lint // initialize
+      id: initialize
+      run: tflint ${{ steps.set-tflint-vars.outputs.arg }} ${{ steps.set-tflint-format.outputs.arg }} ${{ steps.set-tflint-config.outputs.arg }} --init
+      shell: bash
+
     - name: techjavelin/iac-action-terraform-lint // lint
+      id: execute
       run: tflint ${{ steps.set-tflint-vars.outputs.arg }} ${{ steps.set-tflint-format.outputs.arg }} ${{ steps.set-tflint-config.outputs.arg }} ${{ inputs.terraform-dir }}
       shell: bash
 
