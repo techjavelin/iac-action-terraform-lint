@@ -4,28 +4,26 @@ description: 'Lints your terraform files using tflint'
 inputs:
   terraform-dir:
     description: "Absolute path or relative path from project root to where your terraform files are"
-    required: false
     default: '.'
 
-  terraform-version:
-    description: Use a specific version of terraform
-    required: false
+  tflint-version:
+    description: Use a specific version of tflint
     default: latest
 
 runs:
   using: composite
   steps:
-    - name: Setup TFLint
+    - name: techjavelin/iac-action-terraform-lint // setup lint
       uses: terraform-linters/setup-tflint@v2
       with:
-        tflint_version: v0.38.1
+        tflint_version: ${{ inputs.tflint-version }}
 
-    - name: Initialize TFLint
+    - name: techjavelin/iac-action-terraform-lint // initialize
       run: tflint --init
       working-directory: ${{ inputs.source-dir }}
       shell: bash
 
-    - name: Lint Terraform
+    - name: techjavelin/iac-action-terraform-lint // lint
       run: tflint -f compact .
       working-directory: ${{ inputs.source-dir }}
       shell: bash

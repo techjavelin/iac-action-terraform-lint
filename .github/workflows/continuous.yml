@@ -9,12 +9,12 @@ on:
 
 jobs:
   test-terraform-versions:
-    name: iac-ac-action-terraform-lint // continuous // test-terraform-versions
+    name: iac-ac-action-terraform-lint // continuous // test-tflint-versions
 
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        terraform-version: [0.11.14, latest]
+        os: [ubuntu-latest]
+        version: ['0.24.1', 'latest']
 
     runs-on: ${{ matrix.os }}
 
@@ -25,25 +25,29 @@ jobs:
       - name: test-terraform-versions // execute
         uses: ./
         with:
-          terraform-dir: .github/test-harness/simple
-          terraform-version: ${{ matrix.terraform-version }}
+          tflint-version: ${{ matrix.terraform-version }}
 
       - name: test-terraform-versions // collect-results
         id: collect-results
-        run: terraform version -json | jq -r .terraform_version
+        run: tflint --version | head -n1 | cut -d" " -f3
 
       - name: test-terraform-versions // verify-version
-        if: ${{ matrix.terraform-version != 'latest' }}
+        if: ${{ matrix.version != 'latest' }}
         uses: pr-mpt/actions-assert@v4
         with:
-          assertion: npm://@assertions/is-equal:v1
+          assertion: npm://@assertions/is-equal
           actual   : ${{ steps.collect-results.outputs.stdout }}
-          expected : v${{ matrix.terraform-version }}
+          expected : ${{ matrix.terraform-version }}
+
+      - name: test-terraform-versions // collect-facts
+        id: collect-facts
+        run: gh release list -R terraform-linters/tflint --exclude-drafts --limit 10 | grep Latest | cut -f1 | cut -dv -f2
+        if: ${{ matrix.version == 'latest' }}
 
       - name: test-terraform-versions // verify-latest
-        if: ${{ matrix.terraform-version == 'latest' }}
+        if: ${{ matrix.version == 'latest' }}
         uses: pr-mpt/actions-assert@v4
         with:
-          assertion: npm://@assertions/starts-with:v1
+          assertion: npm://@assertions/is-equal
           actual   : ${{ steps.collect-results.outputs.stdout }}
-          expected : v
+          expected : ${{ steps.collect-facts.outputs.stdout }}
