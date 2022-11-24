@@ -10,7 +10,6 @@ on:
 jobs:
   test-terraform-versions:
     name: iac-ac-action-terraform-lint // continuous // test-terraform-versions
-    id: test-terraform-versions
 
     strategy:
       matrix:
