@@ -41,7 +41,7 @@ jobs:
 
       - name: test-terraform-versions // collect-facts
         id: collect-facts
-        run: echo version=$(gh release list -R terraform-linters/tflint --exclude-drafts --limit 10 | grep Latest | cut -f1 | cut -dv -f2) >> $GITHUB_OUTPUT
+        run: echo version=v$(gh release list -R terraform-linters/tflint --exclude-drafts --limit 10 | grep Latest | cut -f1 | cut -dv -f2) >> $GITHUB_OUTPUT
         if: ${{ matrix.version == 'latest' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
