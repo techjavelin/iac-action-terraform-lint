@@ -64,7 +64,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-
       - name: test-tflint-versions // verify-latest
         if: ${{ matrix.version == 'latest' }}
         uses: pr-mpt/actions-assert@v4
@@ -109,3 +108,26 @@ jobs:
         with:
           config: .github/test-harness/config/config.hcl
           terraform-dir: .github/test-harness/config
+
+  test-tflint-vars:
+    name: iac-ac-action-terraform-lint // continuous // test-tflint-vars
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: test-tflint-vars // checkout
+        uses: actions/checkout@v3
+
+      - name: test-tflint-vars // execute
+        id: execute
+        uses: ./
+        with:
+          terraform-dir: .github/test-harness
+          vars: foo=bar,baz=boo
+
+      - name: test-tflint-vars // verify
+        uses: pr-mpt/actions-assert@v4
+        with:
+          assertion: npm://@assertions/is-equal
+          actual   : ${{ steps.execute.outputs.vars }}
+          expected : "--var='foo=bar' --var='baz=boo'"
+

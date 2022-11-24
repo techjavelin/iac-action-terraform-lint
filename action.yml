@@ -20,6 +20,15 @@ inputs:
     description: Force tflint to output in a different format (overrides config)
     required: false
 
+  vars:
+    description: Comma-delimited list of variables
+    required: false
+
+outputs:
+  vars:
+    description: The variables that were passed to tflint
+    value: ${{ steps.set-tflint-vars.outputs.arg }}
+
 runs:
   using: composite
   steps:
@@ -31,6 +40,21 @@ runs:
     - name: techjavelin/iac-action-terraform-lint // initialize
       run: tflint --init
       working-directory: ${{ inputs.source-dir }}
+      shell: bash
+
+    - id: set-tflint-vars
+      run: |
+        if [[ "${{ inputs.vars }}" != "" ]]; then
+          VARS=${{ inputs.vars }}
+          ARGS=
+          for var in ${VARS//,/ }
+          do
+            ARGS="$ARGS --var='$var'"
+          done
+          echo "args=$ARGS" >> $GITHUB_OUTPUT
+        else
+          echo "args=" >> $GITHUB_OUTPUT
+        fi
       shell: bash
 
     - id: set-tflint-format
@@ -52,7 +76,7 @@ runs:
       shell: bash
 
     - name: techjavelin/iac-action-terraform-lint // lint
-      run: tflint ${{ steps.set-tflint-format.outputs.arg }} ${{ steps.set-tflint-config.outputs.arg }} ${{ inputs.terraform-dir }}
+      run: tflint ${{ steps.set-tflint-vars.outputs.arg }} ${{ steps.set-tflint-format.outputs.arg }} ${{ steps.set-tflint-config.outputs.arg }} ${{ inputs.terraform-dir }}
       shell: bash
 
     
