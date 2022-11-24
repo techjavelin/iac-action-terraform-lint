@@ -43,7 +43,7 @@ jobs:
       - name: test-tflint-versions // execute
         uses: ./
         with:
-          tflint-version: ${{ matrix.version }}
+          version: ${{ matrix.version }}
 
       - name: test-tflint-versions // collect-results
         id: collect-results
