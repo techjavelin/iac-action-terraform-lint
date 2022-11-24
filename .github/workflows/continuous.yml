@@ -14,7 +14,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        version: ['v0.42.0', 'latest']
+        version: ['0.42.0', 'latest']
 
     runs-on: ${{ matrix.os }}
 
@@ -25,7 +25,7 @@ jobs:
       - name: test-terraform-versions // execute
         uses: ./
         with:
-          tflint-version: ${{ matrix.version }}
+          tflint-version: v${{ matrix.version }}
 
       - name: test-terraform-versions // collect-results
         id: collect-results
