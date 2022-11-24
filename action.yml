@@ -51,6 +51,7 @@ runs:
           do
             ARGS="$ARGS --var='$var'"
           done
+          echo "Arguments: $ARGS"
           echo "args=$ARGS" >> $GITHUB_OUTPUT
         else
           echo "args=" >> $GITHUB_OUTPUT
